@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Precificação - Mercado Livre</title>
+    <link rel="stylesheet" href="Style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Calculadora Precificação</h1>
+            <p>Otimize seus preços e maximize seu lucro no Mercado Livre</p>
+        </div>
+
+        <div class="main-grid">
+            <!-- FORMULÁRIO PRINCIPAL -->
+            <div class="card">
+                <h2>Dados do Produto</h2>
+                
+                <div class="info-box">
+                    <strong>Dica:</strong> Preencha os valores base do seu produto. As taxas e despesas serão calculadas automaticamente.
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Valor de Custo (R$)</label>
+                    <input type="number" id="custoProduto" class="form-control" placeholder="Ex: 50.00" step="0.01" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Valor de Venda Desejado (R$)</label>
+                    <input type="number" id="valorVenda" class="form-control" placeholder="Ex: 150.00" step="0.01" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Frete (R$)</label>
+                    <input type="number" id="frete" class="form-control" placeholder="Ex: 15.00" step="0.01" min="0">
+                </div>
+
+                <button class="btn btn-primary" onclick="calcularPrecificacao()">Calcular Precificação</button>
+            </div>
+
+            <!-- RESULTADOS PRINCIPAIS -->
+            <div class="card">
+                <h2>Análise de Lucro</h2>
+
+                <div class="results-grid">
+                    <!-- PREMIUM -->
+                    <div>
+                        <h3 style="font-size: 1.1rem; margin: 0 0 15px 0; color: #FF8C00;">
+                            Anúncio Premium <span class="badge premium">17%</span>
+                        </h3>
+                        <div class="result-box premium">
+                            <div class="result-label">Lucro Líquido</div>
+                            <div class="result-value" id="lucroLiquidoPremium">R$ 0,00</div>
+                        </div>
+                        <div class="result-box premium">
+                            <div class="result-label">Margem de Lucro</div>
+                            <div class="result-value" id="margemPremium">0%</div>
+                        </div>
+                    </div>
+
+                    <!-- CLASSIC -->
+                    <div>
+                        <h3 style="font-size: 1.1rem; margin: 0 0 15px 0; color: #2E5090;">
+                            Anúncio Clássico <span class="badge classic">12%</span>
+                        </h3>
+                        <div class="result-box classic">
+                            <div class="result-label">Lucro Líquido</div>
+                            <div class="result-value" id="lucroLiquidoClassic">R$ 0,00</div>
+                        </div>
+                        <div class="result-box classic">
+                            <div class="result-label">Margem de Lucro</div>
+                            <div class="result-value" id="margemClassic">0%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Métrica</th>
+                            <th>Premium</th>
+                            <th>Clássico</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Taxa Comissâo</strong></td>
+                            <td>17%</td>
+                            <td>12%</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Valor Taxa</strong></td>
+                            <td id="taxaPremium">R$ 0,00</td>
+                            <td id="taxaClassic">R$ 0,00</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Frete</strong></td>
+                            <td id="freteDisplay">R$ 0,00</td>
+                            <td id="freteDisplay2">R$ 0,00</td>
+                        </tr>
+                         <tr>
+                            <td><strong>Custo do produto</strong></td>
+                            <td id="custo">R$ 0,00</td>
+                            <td id="custo2">R$ 0,00</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Custo Total</strong></td>
+                            <td id="custoTotalPremium">R$ 0,00</td>
+                            <td id="custoTotalClassic">R$ 0,00</td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SIMULADOR DE PROMOÇÃO -->
+        <div class="card" style="grid-column: 1 / -1;">
+            <h2>Simulador de Promoção</h2>
+
+            <div class="info-box">
+                <strong>Como funciona:</strong> Simule diferentes percentuais de desconto e veja como ficaria seu lucro em cada tipo de anúncio.
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label class="form-label">Desconto em % (sobre o preço de venda)</label>
+                    <input type="number" id="percentualDesconto" class="form-control" placeholder="Ex: 10" step="0.1" min="0" max="100">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Preço com Desconto (R$)</label>
+                    <input type="number" id="precoComDescontoInput" class="form-control" placeholder="Ex: 126.00" step="0.01" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Margem Desejada (%)</label>
+                    <input type="number" id="margemDesejadaInput" class="form-control" placeholder="Ex: 74.3" step="0.1" min="0">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 15px;">
+                <button class="btn btn-secondary" onclick="calcularPromocao()">Simular Desconto</button>
+                <button class="btn btn-secondary" onclick="calcularPrecoOriginalPorDesconto()">Calcular por Preço</button>
+                <button class="btn btn-secondary" onclick="calcularPrecoOriginalPorMargem()">Calcular por Margem</button>
+            </div>
+
+            <div class="promotion-section">
+                <h3 style="margin: 0 0 20px 0; color: var(--color-slate-900);">Resultado da Promoção</h3>
+                
+                <div class="promo-results">
+                    <!-- PREMIUM COM PROMOÇÃO -->
+                    <div class="promo-box">
+                        <h4>Anúncio Premium com Desconto</h4>
+                        <div class="promo-item">
+                            <span class="promo-label">Preço Original</span>
+                            <span class="promo-value" id="precoOrigPrem">R$ 0,00</span>
+                        </div>
+                        <div class="promo-item">
+                            <span class="promo-label">Desconto</span>
+                            <span class="promo-value" id="descontoValorPrem">R$ 0,00</span>
+                        </div>
+                        <div class="promo-item">
+                            <span class="promo-label">Novo Preço</span>
+                            <span class="promo-value" id="novoPrecoPrem">R$ 0,00</span>
+                        </div>
+                        <div class="promo-item" style="border-bottom: 2px solid #ccc; margin-top: 10px;">
+                            <span class="promo-label"><strong>Lucro Líquido</strong></span>
+                            <span class="promo-value" id="lucroPromoPrem" style="color: #FF8C00;">R$ 0,00</span>
+                        </div>
+                        <div class="promo-item">
+                            <span class="promo-label"><strong>Margem</strong></span>
+                            <span class="promo-value" id="margemPromoPrem" style="color: #FF8C00;">0%</span>
+                        </div>
+                    </div>
+
+                    <!-- CLÁSSICO COM PROMOÇÃO -->
+                    <div class="promo-box">
+                        <h4>Anúncio Clássico com Desconto</h4>
+                        <div class="promo-item">
+                            <span class="promo-label">Preço Original</span>
+                            <span class="promo-value" id="precoOrigClass">R$ 0,00</span>
+                        </div>
+                        <div class="promo-item">
+                            <span class="promo-label">Desconto</span>
+                            <span class="promo-value" id="descontoValorClass">R$ 0,00</span>
+                        </div>
+                        <div class="promo-item">
+                            <span class="promo-label">Novo Preço</span>
+                            <span class="promo-value" id="novoPrecoClass">R$ 0,00</span>
+                        </div>
+                        <div class="promo-item" style="border-bottom: 2px solid #ccc; margin-top: 10px;">
+                            <span class="promo-label"><strong>Lucro Líquido</strong></span>
+                            <span class="promo-value" id="lucroPromoClass" style="color: #2E5090;">R$ 0,00</span>
+                        </div>
+                        <div class="promo-item">
+                            <span class="promo-label"><strong>Margem</strong></span>
+                            <span class="promo-value" id="margemPromoClass" style="color: #2E5090;">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function formatarMoeda(valor) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(valor);
+        }
+
+        function formatarPercentual(valor) {
+            return (valor * 100).toFixed(2).replace('.', ',') + '%';
+        }
+
+        function calcularPrecificacao() {
+            const custo = parseFloat(document.getElementById('custoProduto').value) || 0;
+            const valorVenda = parseFloat(document.getElementById('valorVenda').value) || 0;
+            const frete = parseFloat(document.getElementById('frete').value) || 0;
+
+            
+            const taxaPremium = valorVenda * 0.17; // 17% para o anuncio premium   
+            const taxaClassic = valorVenda * 0.12; // 12% para o anuncio classico 
+
+            const custoTotalPrem = custo + taxaPremium + frete;
+            const lucroLiquidoPrem = valorVenda - custoTotalPrem;
+            const margemPrem = custo > 0 ? (lucroLiquidoPrem / custo) * 100 : 0;
+
+            const custoTotalClass = custo + taxaClassic + frete;
+            const lucroLiquidoClass = valorVenda - custoTotalClass;
+            const margemClass = custo > 0 ? (lucroLiquidoClass / custo) * 100 : 0;
+
+            document.getElementById('lucroLiquidoPremium').textContent = formatarMoeda(lucroLiquidoPrem);
+            document.getElementById('margemPremium').textContent = margemPrem.toFixed(2) + '%';
+            
+            document.getElementById('lucroLiquidoClassic').textContent = formatarMoeda(lucroLiquidoClass);
+            document.getElementById('margemClassic').textContent = margemClass.toFixed(2) + '%';
+
+            document.getElementById('taxaPremium').textContent = formatarMoeda(taxaPremium);
+            document.getElementById('taxaClassic').textContent = formatarMoeda(taxaClassic);
+            document.getElementById('freteDisplay').textContent = formatarMoeda(frete);
+            document.getElementById('freteDisplay2').textContent = formatarMoeda(frete);
+            document.getElementById('custo').textContent = formatarMoeda(custo);
+            document.getElementById('custo2').textContent = formatarMoeda(custo);
+            document.getElementById('custoTotalPremium').textContent = formatarMoeda(custoTotalPrem);
+            document.getElementById('custoTotalClassic').textContent = formatarMoeda(custoTotalClass);
+
+            const elemPrem = document.getElementById('lucroLiquidoPremium').parentElement;
+            const elemClass = document.getElementById('lucroLiquidoClassic').parentElement;
+
+            if (lucroLiquidoPrem < 0) {
+                elemPrem.classList.add('negative');
+            } else {
+                elemPrem.classList.remove('negative');
+            }
+
+            if (lucroLiquidoClass < 0) {
+                elemClass.classList.add('negative');
+            } else {
+                elemClass.classList.remove('negative');
+            }
+
+            window.dadosPrecificacao = {
+                custo,
+                valorVenda,
+                frete,
+                margemPrem,
+                margemClass,
+                lucroLiquidoPrem,
+                lucroLiquidoClass
+            };
+        }
+
+        function calcularPromocao() {
+            if (!window.dadosPrecificacao) {
+                alert('Primeiro calcule a precificação do produto!');
+                return;
+            }
+
+            const desconto = parseFloat(document.getElementById('percentualDesconto').value) || 0;
+            const valorVenda = parseFloat(document.getElementById('valorVenda').value) || 0;
+            const { custo, frete } = window.dadosPrecificacao;
+
+            if (desconto < 0 || desconto > 100) {
+                alert('Percentual de desconto deve estar entre 0 e 100');
+                return;
+            }
+
+            const novoPreco = valorVenda * (1 - desconto / 100);
+            const valorDesconto = valorVenda - novoPreco;
+
+            const taxaPromoPrem = novoPreco * 0.17;
+            const custoTotalPromoPrem = custo + taxaPromoPrem + frete;
+            const lucroLiquidoPromoPrem = novoPreco - custoTotalPromoPrem;
+            const margemPromoPrem = custo > 0 ? (lucroLiquidoPromoPrem / custo) * 100 : 0;
+
+            const taxaPromoClass = novoPreco * 0.12;
+            const custoTotalPromoClass = custo + taxaPromoClass + frete;
+            const lucroLiquidoPromoClass = novoPreco - custoTotalPromoClass;
+            const margemPromoClass = custo > 0 ? (lucroLiquidoPromoClass / custo) * 100 : 0;
+
+            document.getElementById('precoOrigPrem').textContent = formatarMoeda(valorVenda);
+            document.getElementById('descontoValorPrem').textContent = '-' + formatarMoeda(valorDesconto);
+            document.getElementById('novoPrecoPrem').textContent = formatarMoeda(novoPreco);
+            document.getElementById('lucroPromoPrem').textContent = formatarMoeda(lucroLiquidoPromoPrem);
+            document.getElementById('margemPromoPrem').textContent = margemPromoPrem.toFixed(2) + '%';
+
+            document.getElementById('precoOrigClass').textContent = formatarMoeda(valorVenda);
+            document.getElementById('descontoValorClass').textContent = '-' + formatarMoeda(valorDesconto);
+            document.getElementById('novoPrecoClass').textContent = formatarMoeda(novoPreco);
+            document.getElementById('lucroPromoClass').textContent = formatarMoeda(lucroLiquidoPromoClass);
+            document.getElementById('margemPromoClass').textContent = margemPromoClass.toFixed(2) + '%';
+
+            const elemPromoPrem = document.getElementById('lucroPromoPrem');
+            const elemPromoClass = document.getElementById('lucroPromoClass');
+
+            if (lucroLiquidoPromoPrem < 0) {
+                elemPromoPrem.style.color = '#FF0000';
+            } else {
+                elemPromoPrem.style.color = '#FF8C00';
+            }
+
+            if (lucroLiquidoPromoClass < 0) {
+                elemPromoClass.style.color = '#FF0000';
+            } else {
+                elemPromoClass.style.color = '#2E5090';
+            }
+        }
+
+        document.getElementById('custoProduto').addEventListener('input', calcularPrecificacao);
+        document.getElementById('valorVenda').addEventListener('input', calcularPrecificacao);
+        document.getElementById('frete').addEventListener('input', calcularPrecificacao);
+        
+        document.getElementById('percentualDesconto').addEventListener('input', calcularPromocao);
+        document.getElementById('precoComDescontoInput').addEventListener('input', function() {
+        });
+
+        function calcularPrecoOriginalPorDesconto() {
+            if (!window.dadosPrecificacao) {
+                alert('Primeiro calcule a precificação do produto!');
+                return;
+            }
+
+            const desconto = parseFloat(document.getElementById('percentualDesconto').value) || 0;
+            const precoComDesconto = parseFloat(document.getElementById('precoComDescontoInput').value) || 0;
+
+            if (desconto < 0 || desconto > 100) {
+                alert('Percentual de desconto deve estar entre 0 e 100');
+                return;
+            }
+
+            if (precoComDesconto <= 0) {
+                alert('Preço com desconto deve ser maior que zero');
+                return;
+            }
+
+            const precoOriginal = precoComDesconto / (1 - desconto / 100);
+
+            document.getElementById('valorVenda').value = precoOriginal.toFixed(2);
+
+            calcularPrecificacao();
+            
+            calcularPromocao();
+        }
+
+        function calcularPrecoOriginalPorMargem() {
+            if (!window.dadosPrecificacao) {
+                alert('Primeiro calcule a precificação do produto!');
+                return;
+            }
+
+            const desconto = parseFloat(document.getElementById('percentualDesconto').value) || 0;
+            const margemDesejada = parseFloat(document.getElementById('margemDesejadaInput').value) || 0;
+            const { custo, frete } = window.dadosPrecificacao;
+
+            if (desconto < 0 || desconto > 100) {
+                alert('Percentual de desconto deve estar entre 0 e 100');
+                return;
+            }
+
+            if (margemDesejada < 0) {
+                alert('Margem desejada não pode ser negativa');
+                return;
+            }
+
+            const lucroDesejadoPrem = (margemDesejada / 100) * custo;
+            const precoComDescontoPrem = (lucroDesejadoPrem + custo + frete) / (1 - 0.17);
+            
+            const precoOriginalPrem = precoComDescontoPrem / (1 - desconto / 100);
+
+            const lucroDesejadoClass = (margemDesejada / 100) * custo;
+            const precoComDescontoClass = (lucroDesejadoClass + custo + frete) / (1 - 0.12);
+            const precoOriginalClass = precoComDescontoClass / (1 - desconto / 100);
+
+            document.getElementById('valorVenda').value = precoOriginalPrem.toFixed(2);
+            document.getElementById('precoComDescontoInput').value = precoComDescontoPrem.toFixed(2);
+
+            calcularPrecificacao();
+            
+            calcularPromocao();
+        }
+    </script>
+</body>
+</html>
